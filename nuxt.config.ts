@@ -1,17 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
-  colorMode: {
-    preference: 'light',
-    fallback: "light", // Jika tidak bisa membaca preferensi, tetap pakai light
-    classSuffix: "", // Pastikan tidak menambahkan suffix class
-  },
-  modules: [
-    '@nuxt/ui',
-    '@nuxtjs/tailwindcss',
-    '@formkit/auto-animate',
-    '@nuxtjs/color-mode',
-    'nuxt-aos'
-  ]
+  compatibilityDate: "2025-02-23"
 })

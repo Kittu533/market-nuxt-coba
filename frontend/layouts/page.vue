@@ -39,7 +39,8 @@ const menus = ref([
         <!-- Button Book A Call -->
 
         <div class="pl-4">
-          <Button class="rounded-xl">Book A Call</Button>
+          <NuxtLink class="rounded-xl" to="/register">Register</NuxtLink>
+
         </div>
       </PageContainer>
     </header>

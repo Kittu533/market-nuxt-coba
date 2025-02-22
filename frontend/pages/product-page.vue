@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 definePageMeta({
   layout: "page",
 });
@@ -8,46 +8,16 @@ useSeoMeta({
   titleTemplate: "",
 });
 
-// Interfaces
-interface Product {
-  id: number;
-  title: string;
-  image: string;
-  price: number;
-  category: string;
-}
+// Fetch products
+import { useProducts } from "@/composables/useProducts";
+const { products, loading, error, pending, fetchProducts } = useProducts();
+fetchProducts();
 
-// State
-const searchQuery = ref('');
-const selectedCategory = ref('All'); // ✅ Default semua produk ditampilkan
-
-// Fetch all products
-const { data: allProducts, pending, error } = await useFetch<Product[]>("https://fakestoreapi.com/products");
-
-// Computed properties
-const categories = computed(() => {
-  if (!allProducts.value) return [];
-  return ['All', ...new Set(allProducts.value.map(product => product.category))];
-});
-
-const filteredProducts = computed(() => {
-  if (!allProducts.value) return [];
+// Import composable filter produk
+import { useProductFilters } from "@/composables/useProductFilters";
+const { searchQuery, selectedCategory, categories, filteredProducts, sortedProducts, formatPrice } =
+  useProductFilters(products);
   
-  return allProducts.value.filter(product => {
-    const matchesSearch = product.title.toLowerCase().includes(searchQuery.value.toLowerCase());
-    const matchesCategory = selectedCategory.value === 'All' || product.category === selectedCategory.value;
-    return matchesSearch && matchesCategory;
-  });
-});
-
-const sortedProducts = computed(() => {
-  return [...filteredProducts.value].sort((a, b) => a.price - b.price); // ✅ Sorting otomatis Low to High
-});
-
-// Methods
-const formatPrice = (price: number) => {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
-};
 </script>
 
 <template>
@@ -60,7 +30,7 @@ const formatPrice = (price: number) => {
         v-model="searchQuery"
         type="text"
         placeholder="Search products..."
-        class="p-2 border rounded  text-white"
+        class="p-2 border rounded text-white"
       />
       <select v-model="selectedCategory" class="p-2 border rounded text-white">
         <option v-for="category in categories" :key="category" :value="category">
@@ -72,7 +42,7 @@ const formatPrice = (price: number) => {
     <!-- Loading and Error States -->
     <div v-if="pending" class="text-center py-4">Loading...</div>
     <div v-else-if="error" class="text-center py-4 text-red-500">
-      Error: {{ error.message }}
+      erorr: {{ error }}
     </div>
 
     <!-- Product Grid -->

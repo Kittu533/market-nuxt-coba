@@ -2,6 +2,15 @@
 definePageMeta({
   layout: "page",
 });
+// const colorMode = useColorMode()
+// const isDark = computed({
+//   get () {
+//     return colorMode.value === 'light'
+//   },
+//   set () {
+//     colorMode.preference = colorMode.value === 'light' ? 'light' : 'l'
+//   }
+// })
 
 useSeoMeta({
   title: "Landing Page",
@@ -16,47 +25,14 @@ const stats = [
 ];
 
 // fetch API menggunakan useFetch
-interface Product {
-  id: number;
-  title: string;
-  image: string;
-}
 
-const {
-  data: products,
-  pending,
-  error,
-} = useFetch<Product[]>("https://fakestoreapi.com/products?limit=3");
+import {useProducts} from "@/composables/useProducts";
+const {products,pending,loading,error,fetchProducts} = useProducts();
+fetchProducts();
 
-// // fetch Api FakeStore
-// import { ref, onMounted } from "vue";
+const limitedProducts = computed(() => products.value.slice(0, 3));
 
-//  Definisikan interface untuk produk dari API
 
-// // State untuk menyimpan data produk dan status loading
-// const products = ref<Product[]>([]);
-// const loading = ref(true);
-
-// // Fungsi untuk fetch data produk
-// const fetchProducts = async () => {
-//   try {
-//     const response = await fetch("https://fakestoreapi.com/products?limit=3");
-//     const data: Product[] = await response.json();
-//     products.value = data;
-//   } catch (error) {
-//     console.error("Error fetching products:", error);
-//   } finally {
-//     loading.value = false;
-//   }
-// };
-
-// // Fetch data saat komponen dipasang
-// onMounted(fetchProducts);
-
-// import { vAutoAnimate } from "@formkit/auto-animate";
-// import type { _transitionDuration } from "#tailwind-config/theme";
-
-// const isOpen = ref(false);
 </script>
 
 <template>
@@ -148,8 +124,7 @@ const {
         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto"
       >
         <div
-          v-for="product in products"
-          :key="product.id"
+          v-for="product in limitedProducts" :key="product.id"
           class="bg-white rounded-3xl shadow-md p-6 text-center"
         >
           <img
